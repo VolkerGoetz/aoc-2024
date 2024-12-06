@@ -127,9 +127,8 @@ class Grid(val input: List<String>) {
     fun tryLoopsParallel(): Long {
 
         var numLoops =
-            (0..size.x - 1).asIterable().flatMap { x ->
-                (0..size.y - 1).asIterable()
-                    .map { y -> Point(x, y) }
+            (0..size.x - 1).flatMap { x ->
+                (0..size.y - 1).map { y -> Point(x, y) }
             }
                 .parallelStream()
                 .filter { grid[it.x][it.y] != obstacle }
