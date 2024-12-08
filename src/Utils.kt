@@ -29,3 +29,36 @@ fun List<String>.toIntList(nr: Int) = this.stream()
 fun List<String>.leftList() = this.toIntList(0)
 fun List<String>.rightList() = this.toIntList(1)
 
+
+data class Point(val x: Int, val y: Int)
+
+infix fun Int.to(that: Int): Point = Point(this, that)
+fun Pair<Point, Point>.vector(): Point =
+    Point(second.x - first.x, second.y - first.y)
+
+operator fun Point.plus(that: Point): Point =
+    Point(this.x + that.x, this.y + that.y)
+
+class Grid() : ArrayList<ArrayList<Char>>() {
+
+    constructor(lines: List<String>) : this() {
+        for (x in lines[0].indices) {
+            var col = ArrayList<Char>()
+            for (y in lines.indices) {
+                col.add(lines[y][x])
+            }
+            add(col)
+        }
+    }
+
+    val allPoints by lazy {
+        indices.flatMap { x ->
+            this[x].indices.map { y -> Point(x, y) }
+        }
+    }
+
+    operator fun get(pos: Point) = this[pos.x][pos.y]
+
+    operator fun contains(p: Point) =
+        p.x in this.indices && p.y in this[0].indices
+}
