@@ -1,5 +1,4 @@
-class Grid(val input: List<String>) {
-    data class Point(val x: Int, val y: Int)
+class Laboratory(val input: List<String>) {
     data class Direction(val dx: Int, val dy: Int, val mark: Char)
 
     infix fun Int.to(that: Int): Point = Point(this, that)
@@ -13,39 +12,18 @@ class Grid(val input: List<String>) {
     val right = Direction(1, 0, 'r')
 
     val size: Point = input[0].length to (input.size)
-    var grid: ArrayList<ArrayList<Char>> = ArrayList()
+    var grid = Grid(input)
     var currentDirection = up
-    lateinit var currentPosition: Point
+    var currentPosition = grid.allPoints.first { grid[it] == '^' }
 
     init {
-        for (x in 0..size.x - 1) {
-            var col = ArrayList<Char>()
-            for (y in 0..size.y - 1) {
-                //println("$x | $y")
-                col.add(input[y][x])
-            }
-            grid.add(col)
-        }
-
-        for (x in grid.indices) {
-            for (y in grid[x].indices) {
-                if (grid[x][y] == '^') {
-                    currentPosition = x to y
-                    break
-                }
-            }
-        }
-
-        if (!this::currentPosition.isInitialized)
-            throw IllegalStateException("No starting point (^) in grid found")
-
         setValue(currentPosition, up.mark)
     }
 
     fun copy() =
-        Grid(this.input)
+        Laboratory(this.input)
 
-    fun copyWithAdditionalObstacle(obstaclePos: Point): Grid =
+    fun copyWithAdditionalObstacle(obstaclePos: Point): Laboratory =
         copy().also { g2 -> g2.setValue(obstaclePos, obstacle) }
 
     fun printGrid(): Unit {
@@ -108,18 +86,17 @@ class Grid(val input: List<String>) {
     fun tryLoops(): Long {
 
         var numLoops = 0
-        for (x in 0..size.x - 1) {
-            for (y in 0..size.y - 1) {
-                if (grid[x][y] == obstacle) {
-                    continue
-                }
+        for (p in grid.allPoints) {
+            if (grid[p] == obstacle) {
+                continue
+            }
 
-                val g2 = copyWithAdditionalObstacle(Point(x, y))
-                if (g2.walkPatrol()) {
-                    ++numLoops
-                }
+            val g2 = copyWithAdditionalObstacle(p)
+            if (g2.walkPatrol()) {
+                ++numLoops
             }
         }
+
 
         return numLoops.toLong()
     }
@@ -127,9 +104,7 @@ class Grid(val input: List<String>) {
     fun tryLoopsParallel(): Long {
 
         var numLoops =
-            (0..size.x - 1).flatMap { x ->
-                (0..size.y - 1).map { y -> Point(x, y) }
-            }
+            grid.allPoints
                 .parallelStream()
                 .filter { grid[it.x][it.y] != obstacle }
                 .filter { it -> copyWithAdditionalObstacle(it).walkPatrol() }
@@ -152,7 +127,7 @@ fun main() {
 
     fun part1(input: List<String>): Long {
 
-        val grid = Grid(input)
+        val grid = Laboratory(input)
         //grid.printGrid()
         grid.walkPatrol()
         val cnt = grid.countVisitedPlaces()
@@ -162,7 +137,7 @@ fun main() {
     fun part2(input: List<String>): Long {
 
         //return Grid(input).tryLoops()
-        return Grid(input).tryLoopsParallel()
+        return Laboratory(input).tryLoopsParallel()
     }
 
     val testInput = readInput("Day06_test")
