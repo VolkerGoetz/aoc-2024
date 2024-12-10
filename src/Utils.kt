@@ -30,7 +30,15 @@ fun List<String>.leftList() = this.toIntList(0)
 fun List<String>.rightList() = this.toIntList(1)
 
 
-data class Point(val x: Int, val y: Int)
+data class Point(val x: Int, val y: Int) : Comparable<Point> {
+    override fun compareTo(other: Point) =
+        when {
+            this.y == other.y -> this.x.compareTo(other.x)
+            else -> this.y.compareTo(other.y)
+        } //.also { println("$this to $other -> $it") }
+}
+
+data class Direction(val dx: Int, val dy: Int)
 
 infix fun Int.to(that: Int): Point = Point(this, that)
 fun Pair<Point, Point>.vector(): Point =
@@ -39,13 +47,16 @@ fun Pair<Point, Point>.vector(): Point =
 operator fun Point.plus(that: Point): Point =
     Point(this.x + that.x, this.y + that.y)
 
-class Grid() : ArrayList<ArrayList<Char>>() {
+operator fun Point.plus(that: Direction): Point =
+    Point(this.x + that.dx, this.y + that.dy)
 
-    constructor(lines: List<String>) : this() {
+sealed class Grid<T>(lines: List<String>, producer: (Char) -> T) : ArrayList<ArrayList<T>>() {
+
+    init {
         for (x in lines[0].indices) {
-            var col = ArrayList<Char>()
+            var col = ArrayList<T>()
             for (y in lines.indices) {
-                col.add(lines[y][x])
+                col.add(producer(lines[y][x]))
             }
             add(col)
         }
@@ -62,3 +73,6 @@ class Grid() : ArrayList<ArrayList<Char>>() {
     operator fun contains(p: Point) =
         p.x in this.indices && p.y in this[0].indices
 }
+
+class IntGrid(lines: List<String>) : Grid<Int>(lines, Char::digitToInt)
+class CharGrid(lines: List<String>) : Grid<Char>(lines, { c: Char -> c })

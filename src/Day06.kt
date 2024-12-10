@@ -12,7 +12,7 @@ class Laboratory(val input: List<String>) {
     val right = Direction(1, 0, 'r')
 
     val size: Point = input[0].length to (input.size)
-    var grid = Grid(input)
+    var grid = CharGrid(input)
     var currentDirection = up
     var currentPosition = grid.allPoints.first { grid[it] == '^' }
 

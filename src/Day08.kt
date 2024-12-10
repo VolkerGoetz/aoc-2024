@@ -1,6 +1,6 @@
 data class Antenna(val pos: Point, val freq: Char)
 
-fun antennasByFrequency(grid: Grid) =
+fun antennasByFrequency(grid: CharGrid) =
     grid.allPoints
         .map { Antenna(it, grid[it]) }
         .filterNot { it.freq == '.' }
@@ -19,7 +19,7 @@ fun main() {
 
     fun part1(input: List<String>): Long {
 
-        val antennaGrid = Grid(input)
+        val antennaGrid = CharGrid(input)
         val antennasByFreq = antennasByFrequency(antennaGrid)
 
         antennasByFreq.forEach { f, al -> println("$f -> $al") }
@@ -36,7 +36,7 @@ fun main() {
 
     fun part2(input: List<String>): Long {
 
-        val antennaGrid = Grid(input)
+        val antennaGrid = CharGrid(input)
         val antennasByFreq = antennasByFrequency(antennaGrid)
 
         val a = 'a' in antennasByFreq
