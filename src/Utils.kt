@@ -38,7 +38,14 @@ data class Point(val x: Int, val y: Int) : Comparable<Point> {
         } //.also { println("$this to $other -> $it") }
 }
 
-data class Direction(val dx: Int, val dy: Int)
+data class Direction(val dx: Int, val dy: Int) {
+    companion object {
+        val North = Direction(0, -1)
+        val East = Direction(1, 0)
+        val South = Direction(0, 1)
+        val West = Direction(-1, 0)
+    }
+}
 
 infix fun Int.to(that: Int): Point = Point(this, that)
 fun Pair<Point, Point>.vector(): Point =
@@ -50,7 +57,10 @@ operator fun Point.plus(that: Point): Point =
 operator fun Point.plus(that: Direction): Point =
     Point(this.x + that.dx, this.y + that.dy)
 
-sealed class Grid<T>(lines: List<String>, producer: (Char) -> T) : ArrayList<ArrayList<T>>() {
+operator fun Point.times(that: Int): Point =
+    Point(this.x * that, this.y * that)
+
+open class Grid<T>(lines: List<String>, producer: (Char) -> T) : ArrayList<ArrayList<T>>() {
 
     init {
         for (x in lines[0].indices) {
@@ -69,6 +79,8 @@ sealed class Grid<T>(lines: List<String>, producer: (Char) -> T) : ArrayList<Arr
     }
 
     operator fun get(pos: Point) = this[pos.x][pos.y]
+
+    fun getOrNull(pos: Point) = if (pos in this) get(pos) else null
 
     operator fun contains(p: Point) =
         p.x in this.indices && p.y in this[0].indices
