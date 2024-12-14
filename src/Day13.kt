@@ -42,67 +42,66 @@ data class ClawMachine(
 }
 
 
-fun test1() {
+fun main() {
+    fun test1() {
 
-    val res = ClawMachine(
-        94, 34,
-        22, 67,
-        8400, 5400,
-    ).solve()
-    res.println()
-    check(res != null)
-    check(res.first == 80L && res.second == 40L)
-}
-
-fun test2() {
-
-    val res = ClawMachine(
-        26, 66,
-        67, 21,
-        12748, 12176
-    ).solve()
-    res.println()
-    check(res == null)
-}
-
-fun test3() {
-
-    val res = ClawMachine(
-        17, 86,
-        84, 37,
-        7870, 6450
-    ).solve()
-    res.println()
-    check(res != null)
-    check(res.first == 38L && res.second == 86L)
-}
-
-fun test4() {
-
-    val res = ClawMachine(
-        69, 23,
-        27, 71,
-        18641, 10279
-    ).solve()
-    res.println()
-    check(res == null)
-}
-
-fun String.parseLine(): Pair<Long, Long> =
-    """.+?(\d+).+?(\d+)""".toRegex().find(this)?.let {
-        Pair(it.groupValues[1].toLong(), it.groupValues[2].toLong())
-    } ?: throw IllegalArgumentException()
-
-
-fun parseInput(input: List<String>, addToPrice: Long = 0L) =
-    input.chunked(4).map { mlines ->
-        val (ax, ay) = mlines[0].parseLine()
-        val (bx, by) = mlines[1].parseLine()
-        val (px, py) = mlines[2].parseLine()
-        ClawMachine(ax, ay, bx, by, px + addToPrice, py + addToPrice)
+        val res = ClawMachine(
+            94, 34,
+            22, 67,
+            8400, 5400,
+        ).solve()
+        res.println()
+        check(res != null)
+        check(res.first == 80L && res.second == 40L)
     }
 
-fun main() {
+    fun test2() {
+
+        val res = ClawMachine(
+            26, 66,
+            67, 21,
+            12748, 12176
+        ).solve()
+        res.println()
+        check(res == null)
+    }
+
+    fun test3() {
+
+        val res = ClawMachine(
+            17, 86,
+            84, 37,
+            7870, 6450
+        ).solve()
+        res.println()
+        check(res != null)
+        check(res.first == 38L && res.second == 86L)
+    }
+
+    fun test4() {
+
+        val res = ClawMachine(
+            69, 23,
+            27, 71,
+            18641, 10279
+        ).solve()
+        res.println()
+        check(res == null)
+    }
+
+    fun String.parseLine(): Pair<Long, Long> =
+        """.+?(\d+).+?(\d+)""".toRegex().find(this)?.let {
+            Pair(it.groupValues[1].toLong(), it.groupValues[2].toLong())
+        } ?: throw IllegalArgumentException()
+
+
+    fun parseInput(input: List<String>, addToPrice: Long = 0L) =
+        input.chunked(4).map { mlines ->
+            val (ax, ay) = mlines[0].parseLine()
+            val (bx, by) = mlines[1].parseLine()
+            val (px, py) = mlines[2].parseLine()
+            ClawMachine(ax, ay, bx, by, px + addToPrice, py + addToPrice)
+        }
 
     //test1()
     //test2()
