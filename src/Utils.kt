@@ -61,6 +61,7 @@ operator fun Point.times(that: Int): Point =
     Point(this.x * that, this.y * that)
 
 open class Grid<T>(lines: List<String>, producer: (Char) -> T) : ArrayList<ArrayList<T>>() {
+    val gridSize: Point
 
     init {
         for (x in lines[0].indices) {
@@ -70,6 +71,7 @@ open class Grid<T>(lines: List<String>, producer: (Char) -> T) : ArrayList<Array
             }
             add(col)
         }
+        gridSize = lines[0].length to (lines.size)
     }
 
     val allPoints by lazy {
@@ -79,6 +81,9 @@ open class Grid<T>(lines: List<String>, producer: (Char) -> T) : ArrayList<Array
     }
 
     operator fun get(pos: Point) = this[pos.x][pos.y]
+    operator fun set(pos: Point, value: T) {
+        this[pos.x][pos.y] = value
+    }
 
     fun getOrNull(pos: Point) = if (pos in this) get(pos) else null
 
