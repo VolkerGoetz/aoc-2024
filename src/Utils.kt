@@ -36,6 +36,8 @@ data class Point(val x: Int, val y: Int) : Comparable<Point> {
             this.y == other.y -> this.x.compareTo(other.x)
             else -> this.y.compareTo(other.y)
         } //.also { println("$this to $other -> $it") }
+
+    override fun toString() = "$x/$y"
 }
 
 data class Direction(val dx: Int, val dy: Int) {
@@ -45,7 +47,28 @@ data class Direction(val dx: Int, val dy: Int) {
         val South = Direction(0, 1)
         val West = Direction(-1, 0)
     }
+
+    override fun toString() = "$dx/$dy"
 }
+
+fun Direction.turnRight(): Direction =
+    when (this) {
+        Direction.North -> Direction.East
+        Direction.East -> Direction.South
+        Direction.South -> Direction.West
+        Direction.West -> Direction.North
+        else -> error("Invalid argument $this")
+    }
+
+fun Direction.turnLeft(): Direction =
+    when (this) {
+        Direction.North -> Direction.West
+        Direction.West -> Direction.South
+        Direction.South -> Direction.East
+        Direction.East -> Direction.North
+        else -> error("Invalid argument $this")
+    }
+
 
 infix fun Int.to(that: Int): Point = Point(this, that)
 fun Pair<Point, Point>.vector(): Point =
