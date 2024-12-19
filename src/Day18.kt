@@ -71,15 +71,13 @@ fun main() {
     fun part2(input: List<String>, memorySize: Int = 71): String {
         var goodSize = 1
         var badSize = input.size
-        var currentSize = badSize / 2
 
         while (badSize - goodSize != 1) {
+            val currentSize = goodSize + (badSize - goodSize) / 2
             if (ComputerMemoryMaze(memorySize to memorySize, input, currentSize).shortestPathLength() > 0) {
                 goodSize = currentSize
-                currentSize += (badSize - goodSize) / 2
             } else {
                 badSize = currentSize
-                currentSize -= (badSize - goodSize) / 2
             }
         }
         return input.get(badSize - 1)
