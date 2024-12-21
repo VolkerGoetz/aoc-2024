@@ -2,6 +2,7 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.readText
+import kotlin.math.abs
 
 /**
  * Reads lines from the given input txt file.
@@ -46,6 +47,7 @@ data class Direction(val dx: Int, val dy: Int) {
         val East = Direction(1, 0)
         val South = Direction(0, 1)
         val West = Direction(-1, 0)
+        val MainDirections = listOf(North, East, South, West)
     }
 
     override fun toString() = "$dx/$dy"
@@ -82,6 +84,9 @@ operator fun Point.plus(that: Direction): Point =
 
 operator fun Point.times(that: Int): Point =
     Point(this.x * that, this.y * that)
+
+fun Point.manhattanDistTo(other: Point): Int =
+    abs(x - other.x) + abs(y - other.y)
 
 open class Grid<T>(lines: List<String>, producer: (Char) -> T) : ArrayList<ArrayList<T>>() {
     val gridSize: Point
